@@ -1,0 +1,271 @@
+/**
+ * Checkout Wizard Dialog Component with custom Confetti Particles
+ */
+
+let activeConfettiAnimId = null;
+
+/**
+ * Launches the multi-step checkout dialog modal.
+ * 
+ * @param {Object} state - The global app state
+ * @param {Object} callbacks - Checkout callbacks (checkout success details)
+ */
+export function openCheckoutModal(state, callbacks) {
+  const dialog = document.getElementById("checkout-dialog");
+  if (!dialog) return;
+
+  const shippingForm = document.getElementById("checkout-shipping-form");
+  const paymentForm = document.getElementById("checkout-payment-form");
+  const successView = document.getElementById("checkout-success-view");
+
+  const indShipping = document.getElementById("step-ind-shipping");
+  const indPayment = document.getElementById("step-ind-payment");
+  const indSuccess = document.getElementById("step-ind-success");
+
+  const authAmountLabel = document.getElementById("checkout-auth-amount");
+
+  if (!shippingForm || !paymentForm || !successView) return;
+
+  // Initialize Wizard State (Step 1: Shipping)
+  showStep(1);
+
+  // Calculate order totals
+  const subtotal = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const tax = subtotal * 0.085;
+  const shippingCharge = subtotal > 1500 ? 0 : 100.00;
+  const total = subtotal + tax + shippingCharge;
+
+  authAmountLabel.textContent = `Tk ${total.toFixed(2)}`;
+
+  // Form Step Navigation Helper
+  function showStep(stepNumber) {
+    // Reset views
+    shippingForm.classList.remove("active");
+    paymentForm.classList.remove("active");
+    successView.classList.remove("active");
+
+    indShipping.classList.remove("active");
+    indPayment.classList.remove("active");
+    indSuccess.classList.remove("active");
+
+    if (stepNumber === 1) {
+      shippingForm.classList.add("active");
+      indShipping.classList.add("active");
+    } else if (stepNumber === 2) {
+      paymentForm.classList.add("active");
+      indPayment.classList.add("active");
+    } else if (stepNumber === 3) {
+      successView.classList.add("active");
+      indSuccess.classList.add("active");
+    }
+  }
+
+  // Step 1: Submit Shipping -> Go to Step 2
+  const shippingSubmitHandler = (e) => {
+    e.preventDefault();
+    showStep(2);
+  };
+  shippingForm.addEventListener("submit", shippingSubmitHandler);
+
+  // Step 2: Back button -> Return to Step 1
+  const payBackBtn = document.getElementById("payment-back-btn");
+  const payBackHandler = () => {
+    showStep(1);
+  };
+  payBackBtn.addEventListener("click", payBackHandler);
+
+  // Card formatting helpers
+  const cardNumberInput = document.getElementById("payment-card-number");
+  const cardTypeIcon = document.getElementById("card-type-icon");
+  const cardExpiryInput = document.getElementById("payment-card-expiry");
+
+  // Format credit card: Spaces every 4 digits, detect issuer
+  const cardNumHandler = () => {
+    let value = cardNumberInput.value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    
+    // Detect Issuer type
+    if (value.startsWith("4")) {
+      cardTypeIcon.textContent = " Visa 🔵";
+    } else if (value.startsWith("5")) {
+      cardTypeIcon.textContent = " Mastercard 🔴";
+    } else if (value.startsWith("3")) {
+      cardTypeIcon.textContent = " Amex 🟢";
+    } else {
+      cardTypeIcon.textContent = "💳";
+    }
+
+    let formatted = "";
+    for (let i = 0; i < value.length; i++) {
+      if (i > 0 && i % 4 === 0) formatted += " ";
+      formatted += value[i];
+    }
+    cardNumberInput.value = formatted;
+  };
+  cardNumberInput.addEventListener("input", cardNumHandler);
+
+  // Format expiry dates: MM/YY
+  const cardExpiryHandler = () => {
+    let value = cardExpiryInput.value.replace(/[^0-9]/g, "");
+    if (value.length >= 2) {
+      cardExpiryInput.value = value.slice(0, 2) + "/" + value.slice(2, 4);
+    } else {
+      cardExpiryInput.value = value;
+    }
+  };
+  cardExpiryInput.addEventListener("input", cardExpiryHandler);
+
+  // Step 2: Submit Payment -> Process Simulation -> Go to Step 3
+  const paymentSubmitHandler = (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById("payment-submit-btn");
+    submitBtn.textContent = "Authorizing Encrypted Pipeline...";
+    submitBtn.setAttribute("disabled", "true");
+
+    setTimeout(() => {
+      // Restore button text
+      submitBtn.textContent = "Authorize Secure Payment";
+      submitBtn.removeAttribute("disabled");
+
+      // Set Order Reference details in Step 3
+      const orderRefId = "OMNI-" + Math.floor(100000 + Math.random() * 900000);
+      const emailEntered = document.getElementById("shipping-email").value;
+
+      document.getElementById("success-email").textContent = emailEntered;
+      document.getElementById("success-order-id").textContent = `#${orderRefId}`;
+
+      // Show Success View
+      showStep(3);
+
+      // Trigger Confetti Celebration!
+      startConfettiExplosion();
+
+      // Trigger Checkout complete callback (cleans cart, updates user purchase history)
+      callbacks.onCheckoutComplete({
+        orderId: orderRefId,
+        total: total,
+        itemsCount: state.cart.reduce((sum, item) => sum + item.quantity, 0),
+        itemsSummary: state.cart.map(item => `${item.product.title} (x${item.quantity})`).join(", "),
+        date: new Date().toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      });
+    }, 1500); // 1.5s simulated network delay
+  };
+  paymentForm.addEventListener("submit", paymentSubmitHandler);
+
+  // Step 3: Close Checkout Dialog and finalize
+  const finishBtn = document.getElementById("checkout-finish-btn");
+  const finishHandler = () => {
+    dialog.close();
+    stopConfettiExplosion();
+  };
+  finishBtn.addEventListener("click", finishHandler);
+
+  // Open the dialog
+  dialog.showModal();
+}
+
+/**
+ * Zero-dependency HTML5 Canvas Confetti Animation Loop
+ */
+function startConfettiExplosion() {
+  const canvas = document.getElementById("confetti-canvas");
+  if (!canvas) return;
+
+  canvas.classList.add("active");
+  const ctx = canvas.getContext("2d");
+
+  // Resize canvas to cover window
+  const resizeCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const colors = [
+    "hsl(170, 85%, 50%)", // Teal neon
+    "hsl(260, 85%, 55%)", // Violet nebula
+    "hsl(14, 85%, 50%)",  // Solar amber
+    "hsl(335, 85%, 50%)", // Cyber magenta
+    "hsl(210, 85%, 50%)"  // Deep sea
+  ];
+
+  const particles = [];
+  const particleCount = 120;
+
+  // Generate particles
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height - 20, // Spawn above screen
+      r: Math.random() * 6 + 4,
+      d: Math.random() * canvas.height,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tilt: Math.random() * 10 - 5,
+      tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+      tiltAngle: 0,
+      speed: Math.random() * 3 + 2
+    });
+  }
+
+  // Animation Loop
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let activeParticles = 0;
+
+    for (let i = 0; i < particleCount; i++) {
+      const p = particles[i];
+
+      p.tiltAngle += p.tiltAngleIncremental;
+      p.y += p.speed;
+      p.x += Math.sin(p.tiltAngle) * 0.5;
+      p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+
+      // Draw customized particles
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+      ctx.stroke();
+
+      // Recirculate particle if it flows offscreen
+      if (p.y < canvas.height) {
+        activeParticles++;
+      } else {
+        // Recycle above screen
+        p.y = Math.random() * -40 - 10;
+        p.x = Math.random() * canvas.width;
+        p.speed = Math.random() * 3 + 2;
+      }
+    }
+
+    activeConfettiAnimId = requestAnimationFrame(draw);
+  }
+
+  // Stop previous loops
+  if (activeConfettiAnimId) {
+    cancelAnimationFrame(activeConfettiAnimId);
+  }
+  
+  draw();
+}
+
+/**
+ * Stops and tears down the confetti canvas renderer.
+ */
+function stopConfettiExplosion() {
+  const canvas = document.getElementById("confetti-canvas");
+  if (canvas) {
+    canvas.classList.remove("active");
+  }
+  if (activeConfettiAnimId) {
+    cancelAnimationFrame(activeConfettiAnimId);
+    activeConfettiAnimId = null;
+  }
+}

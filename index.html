@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniFind — Smart Tech & Lifestyle Marketplace</title>
+  <!-- Google Fonts: Outfit (Headings) & Plus Jakarta Sans (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="/src/index.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="#" class="logo">
+        <span class="logo-icon">❖</span>
+        <span class="logo-text">Omni<span>Find</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <button class="nav-link-btn active" data-category="all">All Packs</button>
+        <button class="nav-link-btn" data-category="forest">Forest & Wild</button>
+        <button class="nav-link-btn" data-category="aquatic">Aquatic & Polar</button>
+        <button class="nav-link-btn" data-category="garden">Pets & Garden</button>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Interactive Theme Switcher -->
+        <button id="theme-toggle" class="header-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <span class="sun-icon">☀️</span>
+          <span class="moon-icon">🌙</span>
+        </button>
+
+        <button id="dashboard-btn" class="header-btn" title="User Dashboard" aria-label="User Dashboard">
+          <span class="icon">👤</span>
+          <span class="btn-tooltip">Profile</span>
+        </button>
+
+        <button id="wishlist-btn" class="header-btn" title="Wishlist" aria-label="Wishlist">
+          <span class="icon">♥</span>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+
+        <button id="cart-toggle-btn" class="header-btn cart-btn" title="Shopping Cart" aria-label="Shopping Cart">
+          <span class="icon">🛒</span>
+          <span class="badge" id="cart-count">0</span>
+          <span class="cart-total-badge" id="cart-header-total">Tk 0.00</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <span class="hero-tag">Curated Cuteness</span>
+        <h1 class="hero-title">Find Your Perfect Plush Companion</h1>
+        <p class="hero-subtitle">Discover a meticulously curated collection of ultra-soft animal plush backpacks designed to accompany you on any daily adventure.</p>
+        
+        <div class="hero-search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search" placeholder="Search cute panda, penguin, koala backpacks..." aria-label="Search items">
+          <button id="clear-search-btn" class="clear-search-btn" title="Clear Search" aria-label="Clear Search">×</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Marketplace Area -->
+  <main class="marketplace-container">
+    <!-- Filter Sidebar / Bar -->
+    <section class="filters-bar" aria-label="Filters">
+      <div class="filter-group">
+        <span class="filter-label">Sort By</span>
+        <select id="sort-selector" class="filter-select" aria-label="Sort products">
+          <option value="featured">Featured Curations</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Price Limit: <strong id="price-slider-value">Tk 1000</strong></span>
+        <div class="slider-wrapper">
+          <input type="range" id="price-slider" min="100" max="1000" value="1000" step="50" class="filter-range" aria-label="Price range filter">
+        </div>
+      </div>
+
+      <div class="filter-status" id="active-filters-info" style="display: none;">
+        <span id="filter-summary-text">Showing matches</span>
+        <button id="reset-filters-btn" class="reset-btn">Clear All</button>
+      </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="products-section">
+      <div id="product-grid" class="product-grid">
+        <!-- Dynmically Populated Product Cards -->
+      </div>
+
+      <!-- Empty / No Results State -->
+      <div id="no-results-card" class="no-results-card" style="display: none;">
+        <div class="no-results-icon">🧸</div>
+        <h3>No matching backpacks found</h3>
+        <p>Try refining your search terms or expanding your filter limits.</p>
+        <button id="no-results-reset-btn" class="action-btn">Reset All Filters</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-info">
+        <div class="logo">
+          <span class="logo-icon">❖</span>
+          <span class="logo-text">Omni<span>Find</span></span>
+        </div>
+        <p>Elevating daily adventures through thoughtful, ultra-soft designs and adorable plush companions.</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Explore</h4>
+          <a href="#" data-footer-category="forest">Forest & Wild</a>
+          <a href="#" data-footer-category="aquatic">Aquatic & Polar</a>
+          <a href="#" data-footer-category="garden">Pets & Garden</a>
+        </div>
+        <div class="link-column">
+          <h4>Platform</h4>
+          <button class="footer-btn-link" id="footer-dashboard-btn">User Profile</button>
+          <button class="footer-btn-link" id="footer-cart-btn">View Cart</button>
+          <button class="footer-btn-link" id="footer-terms-btn">Learn More</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 OmniFind Technologies. Built for creators, designers, and developers.</p>
+    </div>
+  </footer>
+
+  <!-- Slide-out Cart Panel Drawer -->
+  <aside id="cart-drawer" class="cart-drawer" aria-label="Shopping Cart">
+    <div class="drawer-backdrop" id="cart-drawer-backdrop"></div>
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h2>Your Selection (<span id="cart-drawer-count">0</span>)</h2>
+        <button id="cart-close-btn" class="close-btn" aria-label="Close cart">&times;</button>
+      </div>
+      
+      <div class="drawer-body" id="cart-items-container">
+        <!-- Dynamically rendered cart items -->
+      </div>
+      
+      <div class="drawer-footer">
+        <div class="price-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">Tk 0.00</span>
+        </div>
+        <div class="price-row secondary">
+          <span>Shipping</span>
+          <span id="cart-shipping">Calculated next</span>
+        </div>
+        <div class="price-row secondary">
+          <span>Estimated Tax</span>
+          <span id="cart-tax">Calculated next</span>
+        </div>
+        <hr class="drawer-divider">
+        <div class="price-row total">
+          <span>Total</span>
+          <span id="cart-total">Tk 0.00</span>
+        </div>
+        
+        <button id="checkout-start-btn" class="checkout-btn" disabled>
+          <span>Proceed to Checkout</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- DIALOG: Product Quick View Modal -->
+  <dialog id="quick-view-dialog" class="custom-dialog">
+    <div class="dialog-wrapper">
+      <button class="dialog-close-btn" data-close-dialog>&times;</button>
+      <div class="dialog-grid" id="quick-view-content">
+        <!-- Dynamically populated details -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- DIALOG: Sleek Checkout Flow Wizard -->
+  <dialog id="checkout-dialog" class="custom-dialog checkout-dialog-box">
+    <div class="dialog-wrapper checkout-wrapper">
+      <button class="dialog-close-btn" data-close-dialog>&times;</button>
+      
+      <div class="checkout-steps">
+        <div class="step-indicator active" id="step-ind-shipping">1. Shipping</div>
+        <div class="step-indicator" id="step-ind-payment">2. Payment</div>
+        <div class="step-indicator" id="step-ind-success">3. Confirmation</div>
+      </div>
+
+      <div class="checkout-content-container">
+        <!-- Step 1: Shipping Form -->
+        <form id="checkout-shipping-form" class="checkout-form-step active">
+          <h3>Delivery Information</h3>
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="shipping-name">Full Name</label>
+              <input type="text" id="shipping-name" placeholder="John Doe" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-email">Email Address</label>
+              <input type="email" id="shipping-email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-phone">Phone Number</label>
+              <input type="tel" id="shipping-phone" placeholder="+1 (555) 019-2834" required>
+            </div>
+            <div class="form-field full">
+              <label for="shipping-address">Street Address</label>
+              <input type="text" id="shipping-address" placeholder="123 Creator Blvd, Suite 400" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-city">City</label>
+              <input type="text" id="shipping-city" placeholder="San Francisco" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-postal">Postal / ZIP Code</label>
+              <input type="text" id="shipping-postal" placeholder="94103" required>
+            </div>
+          </div>
+          
+          <div class="checkout-actions">
+            <button type="button" class="back-btn" data-close-dialog>Cancel</button>
+            <button type="submit" class="primary-btn">Continue to Payment &rarr;</button>
+          </div>
+        </form>
+
+        <!-- Step 2: Payment Form -->
+        <form id="checkout-payment-form" class="checkout-form-step">
+          <h3>Payment Authentication</h3>
+          <div class="payment-overview-card">
+            <span>Amount to Authorize:</span>
+            <strong id="checkout-auth-amount">Tk 0.00</strong>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="payment-card-name">Name on Card</label>
+              <input type="text" id="payment-card-name" placeholder="John Doe" required>
+            </div>
+            <div class="form-field full">
+              <label for="payment-card-number">Card Number</label>
+              <div class="card-number-wrapper">
+                <input type="text" id="payment-card-number" placeholder="•••• •••• •••• ••••" maxlength="19" required>
+                <span id="card-type-icon" class="card-type-icon">💳</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="payment-card-expiry">Expiry Date</label>
+              <input type="text" id="payment-card-expiry" placeholder="MM/YY" maxlength="5" required>
+            </div>
+            <div class="form-field">
+              <label for="payment-card-cvv">CVV Code</label>
+              <input type="password" id="payment-card-cvv" placeholder="•••" maxlength="4" required>
+            </div>
+          </div>
+          
+          <div class="checkout-actions">
+            <button type="button" class="back-btn" id="payment-back-btn">&larr; Shipping Info</button>
+            <button type="submit" class="primary-btn pulse-glow" id="payment-submit-btn">Authorize Secure Payment</button>
+          </div>
+        </form>
+
+        <!-- Step 3: Success Screen -->
+        <div id="checkout-success-view" class="checkout-form-step checkout-success-screen">
+          <div class="success-icon-wrapper">
+            <div class="success-ring"></div>
+            <div class="success-checkmark">✓</div>
+          </div>
+          <h2>Order Received!</h2>
+          <p class="success-message">Your curated items are preparing for delivery. A simulation email has been dispatched to <strong id="success-email">john@example.com</strong>.</p>
+          
+          <div class="order-summary-box">
+            <div class="summary-line">
+              <span>Order Reference:</span>
+              <strong id="success-order-id">#OMNI-83749</strong>
+            </div>
+            <div class="summary-line">
+              <span>Delivery Time:</span>
+              <span>2 - 3 business days (Simulated)</span>
+            </div>
+          </div>
+          
+          <button type="button" class="action-btn" id="checkout-finish-btn">Back to Discoveries</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- DIALOG: Profile and Settings Dashboard -->
+  <dialog id="dashboard-dialog" class="custom-dialog">
+    <div class="dialog-wrapper dashboard-wrapper-box">
+      <button class="dialog-close-btn" data-close-dialog>&times;</button>
+      
+      <div class="dashboard-grid">
+        <aside class="dashboard-sidebar">
+          <div class="profile-card">
+            <div class="profile-avatar">OF</div>
+            <h3>Beginner Explorer</h3>
+            <p>Joined OmniFind Orbit</p>
+          </div>
+          <nav class="dashboard-menu">
+            <button class="menu-btn active" data-tab="profile">Profile & Customization</button>
+            <button class="menu-btn" data-tab="orders">Simulated Orders</button>
+          </nav>
+        </aside>
+        
+        <main class="dashboard-main-content">
+          <!-- Tab 1: Profile & Theme Accent -->
+          <div class="dashboard-tab active" id="db-tab-profile">
+            <h2>Customizer Workshop</h2>
+            <p class="section-desc">Change the UI accent color of OmniFind in real-time to see how CSS variables work dynamically.</p>
+            
+            <div class="settings-group">
+              <h3>Primary Accent Hue</h3>
+              <div class="color-options">
+                <button class="color-picker-btn active" data-hue="170" style="background: hsl(170, 85%, 50%)" title="Teal Neon"></button>
+                <button class="color-picker-btn" data-hue="260" style="background: hsl(260, 85%, 55%)" title="Violet Nebula"></button>
+                <button class="color-picker-btn" data-hue="14" style="background: hsl(14, 85%, 50%)" title="Solar Amber"></button>
+                <button class="color-picker-btn" data-hue="335" style="background: hsl(335, 85%, 50%)" title="Cyber Magenta"></button>
+                <button class="color-picker-btn" data-hue="210" style="background: hsl(210, 85%, 50%)" title="Deep Sea"></button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Site Settings</h3>
+              <label class="toggle-control">
+                <input type="checkbox" id="high-contrast-toggle">
+                <span class="control-label">Enable High Contrast Mode</span>
+              </label>
+              <p class="setting-hint">Increases font-weights and turns border systems bold to satisfy strict WCAG accessibility recommendations.</p>
+            </div>
+
+            <div class="settings-group stats-panel">
+              <h3>Your Interactive Orbit</h3>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <span class="stat-num" id="stat-wishlist">0</span>
+                  <span class="stat-label">Saved Items</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-num" id="stat-cart">0</span>
+                  <span class="stat-label">Cart Items</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-num" id="stat-purchased">0</span>
+                  <span class="stat-label">Completed Orders</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Simulated Past Orders -->
+          <div class="dashboard-tab" id="db-tab-orders">
+            <h2>Simulated Purchases</h2>
+            <p class="section-desc">Keep track of orders processed during this browser session.</p>
+            <div class="orders-list" id="db-orders-list">
+              <div class="empty-orders-view">
+                <span>📦</span>
+                <p>No orders completed yet. Try checking out items from the catalog!</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Confetti Canvas for celebration -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- Main Orchestration Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
