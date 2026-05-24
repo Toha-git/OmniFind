@@ -2064,8 +2064,52 @@ body.light-theme .order-history-card {
 }
 
 /* ==========================================================================
+   AI Sales Assistant Widget
+   ========================================================================== */
+
+.ai-sales-assistant-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 900;
+  width: min(390px, calc(100vw - 40px));
+  height: min(620px, calc(100vh - 120px));
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+  animation: assistantSlideIn 0.55s var(--transition-spring) both;
+}
+
+.ai-sales-assistant-widget iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 560px) {
+  .ai-sales-assistant-widget {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    height: min(620px, calc(100vh - 92px));
+  }
+}
+
+/* ==========================================================================
    Animations
    ========================================================================== */
+
+@keyframes assistantSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 @keyframes headerDrop {
   from {
