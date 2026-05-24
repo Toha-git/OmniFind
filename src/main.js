@@ -34,7 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. Initialize light/dark theme preference
   initThemeToggle();
 
-  // 6. Draw product items for the first time
+  // 6. Initialize floating AI sales assistant controls
+  initAiAssistantWidget();
+
+  // 7. Draw product items for the first time
   renderProducts();
   renderCartDrawer(state, getCartCallbacks());
 });
@@ -396,4 +399,38 @@ function initThemeToggle() {
       document.body.classList.add("light-theme");
     }
   }
+}
+
+/**
+ * Handles the compact AI assistant launcher and floating iframe panel.
+ */
+function initAiAssistantWidget() {
+  const widget = document.querySelector(".ai-sales-assistant-widget");
+  const launcher = document.getElementById("ai-assistant-launcher");
+  const panel = document.getElementById("ai-assistant-panel");
+  const closeBtn = document.getElementById("ai-assistant-close");
+
+  if (!widget || !launcher || !panel || !closeBtn) return;
+
+  const setOpen = (isOpen) => {
+    panel.hidden = !isOpen;
+    launcher.setAttribute("aria-expanded", String(isOpen));
+    launcher.setAttribute("aria-label", isOpen ? "Close AI Sales Assistant" : "Open AI Sales Assistant");
+  };
+
+  launcher.addEventListener("click", () => {
+    setOpen(panel.hidden);
+  });
+
+  closeBtn.addEventListener("click", () => {
+    setOpen(false);
+    launcher.focus();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hidden) {
+      setOpen(false);
+      launcher.focus();
+    }
+  });
 }

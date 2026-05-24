@@ -2072,25 +2072,92 @@ body.light-theme .order-history-card {
   right: 20px;
   bottom: 20px;
   z-index: 900;
+}
+
+.ai-assistant-launcher {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--primary-accent);
+  color: var(--text-inverse);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.24), 0 0 20px var(--primary-accent-glow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  animation: assistantSlideIn 0.55s var(--transition-spring) both;
+}
+
+.ai-assistant-launcher:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28), 0 0 28px var(--primary-accent-glow);
+}
+
+.ai-assistant-launcher:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.ai-assistant-icon {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.ai-assistant-panel {
+  position: absolute;
+  right: 0;
+  bottom: 78px;
   width: min(390px, calc(100vw - 40px));
   height: min(620px, calc(100vh - 120px));
   border-radius: var(--border-radius-sm);
   overflow: hidden;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-  animation: assistantSlideIn 0.55s var(--transition-spring) both;
+  background: var(--bg-surface-solid);
+  animation: assistantPanelOpen 0.34s var(--transition-spring) both;
 }
 
-.ai-sales-assistant-widget iframe {
+.ai-assistant-panel iframe {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
 }
 
+.ai-assistant-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.ai-assistant-close:hover {
+  background: #ef4444;
+  transform: rotate(90deg);
+}
+
 @media (max-width: 560px) {
   .ai-sales-assistant-widget {
     right: 12px;
     bottom: 12px;
+  }
+
+  .ai-assistant-launcher {
+    width: 56px;
+    height: 56px;
+  }
+
+  .ai-assistant-panel {
+    bottom: 70px;
     width: calc(100vw - 24px);
     height: min(620px, calc(100vh - 92px));
   }
@@ -2108,6 +2175,19 @@ body.light-theme .order-history-card {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes assistantPanelOpen {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    transform-origin: bottom right;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transform-origin: bottom right;
   }
 }
 
