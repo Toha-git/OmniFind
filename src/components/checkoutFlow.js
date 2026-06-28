@@ -13,6 +13,7 @@ let activeConfettiAnimId = null;
 export function openCheckoutModal(state, callbacks) {
   const dialog = document.getElementById("checkout-dialog");
   if (!dialog) return;
+  if (dialog.open) return;
 
   const shippingForm = document.getElementById("checkout-shipping-form");
   const paymentForm = document.getElementById("checkout-payment-form");
@@ -25,15 +26,33 @@ export function openCheckoutModal(state, callbacks) {
   const authAmountLabel = document.getElementById("checkout-auth-amount");
   const shippingTotalLabel = document.getElementById("checkout-shipping-total");
   const shippingAreaInputs = document.querySelectorAll('input[name="shipping-area"]');
+  const payBackBtn = document.getElementById("payment-back-btn");
   const bkashLastDigitsInput = document.getElementById("bkash-last-digits");
+  const finishBtn = document.getElementById("checkout-finish-btn");
+  const submitBtn = document.getElementById("payment-submit-btn");
+
+  if (
+    !shippingForm ||
+    !paymentForm ||
+    !successView ||
+    !indShipping ||
+    !indPayment ||
+    !indSuccess ||
+    !authAmountLabel ||
+    !shippingTotalLabel ||
+    !payBackBtn ||
+    !bkashLastDigitsInput ||
+    !finishBtn ||
+    !submitBtn
+  ) return;
+
+  const checkoutSession = new AbortController();
   const emailJsConfig = {
     serviceId: "service_l7w2bzm",
-    templateId: "template_rmcx5zs",
+    templateId: "template_3yv7rs6",
     publicKey: "yO9TDsb-J_LvpTLdU",
     recipientEmail: "ragibulfat@gmail.com"
   };
-
-  if (!shippingForm || !paymentForm || !successView || !authAmountLabel || !shippingTotalLabel || !bkashLastDigitsInput) return;
 
   // Initialize Wizard State (Step 1: Shipping)
   showStep(1);
@@ -90,24 +109,23 @@ export function openCheckoutModal(state, callbacks) {
     updateAuthAmount();
     showStep(2);
   };
-  shippingForm.addEventListener("submit", shippingSubmitHandler);
+  shippingForm.addEventListener("submit", shippingSubmitHandler, { signal: checkoutSession.signal });
 
   shippingAreaInputs.forEach(input => {
-    input.addEventListener("change", updateAuthAmount);
+    input.addEventListener("change", updateAuthAmount, { signal: checkoutSession.signal });
   });
 
   // Step 2: Back button -> Return to Step 1
-  const payBackBtn = document.getElementById("payment-back-btn");
   const payBackHandler = () => {
     showStep(1);
   };
-  payBackBtn.addEventListener("click", payBackHandler);
+  payBackBtn.addEventListener("click", payBackHandler, { signal: checkoutSession.signal });
 
   const bkashDigitsHandler = () => {
     bkashLastDigitsInput.value = bkashLastDigitsInput.value.replace(/[^0-9]/g, "").slice(0, 3);
     bkashLastDigitsInput.setCustomValidity("");
   };
-  bkashLastDigitsInput.addEventListener("input", bkashDigitsHandler);
+  bkashLastDigitsInput.addEventListener("input", bkashDigitsHandler, { signal: checkoutSession.signal });
 
   async function sendPaymentEmail(orderDetails) {
     const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
@@ -146,7 +164,6 @@ export function openCheckoutModal(state, callbacks) {
   // Step 2: Submit Payment -> Send bKash details -> Go to Step 3
   const paymentSubmitHandler = async (e) => {
     e.preventDefault();
-    const submitBtn = document.getElementById("payment-submit-btn");
     const bkashLastDigits = bkashLastDigitsInput.value.trim();
     if (!/^\d{3}$/.test(bkashLastDigits)) {
       bkashLastDigitsInput.setCustomValidity("Enter exactly 3 digits");
@@ -184,12 +201,15 @@ export function openCheckoutModal(state, callbacks) {
       };
 
       await sendPaymentEmail(orderDetails);
+      if (!dialog.open || checkoutSession.signal.aborted) return;
 
       submitBtn.textContent = "Submit bKash Payment";
       submitBtn.removeAttribute("disabled");
 
-      document.getElementById("success-contact").textContent = phoneEntered;
-      document.getElementById("success-order-id").textContent = `#${orderRefId}`;
+      const successContact = document.getElementById("success-contact");
+      const successOrderId = document.getElementById("success-order-id");
+      if (successContact) successContact.textContent = phoneEntered;
+      if (successOrderId) successOrderId.textContent = `#${orderRefId}`;
 
       // Show Success View
       showStep(3);
@@ -206,15 +226,20 @@ export function openCheckoutModal(state, callbacks) {
       alert("Could not send your bKash details. Please try again.");
     }
   };
-  paymentForm.addEventListener("submit", paymentSubmitHandler);
+  paymentForm.addEventListener("submit", paymentSubmitHandler, { signal: checkoutSession.signal });
 
   // Step 3: Close Checkout Dialog and finalize
-  const finishBtn = document.getElementById("checkout-finish-btn");
   const finishHandler = () => {
     dialog.close();
-    stopConfettiExplosion();
   };
-  finishBtn.addEventListener("click", finishHandler);
+  finishBtn.addEventListener("click", finishHandler, { signal: checkoutSession.signal });
+
+  dialog.addEventListener("close", () => {
+    checkoutSession.abort();
+    submitBtn.textContent = "Submit bKash Payment";
+    submitBtn.removeAttribute("disabled");
+    stopConfettiExplosion();
+  }, { once: true });
 
   // Open the dialog
   dialog.showModal();
