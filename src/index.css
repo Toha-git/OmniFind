@@ -889,6 +889,122 @@ body.light-theme .add-cart-btn {
 }
 
 /* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.main-footer {
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  margin-top: 40px;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  gap: 48px;
+}
+
+.footer-info {
+  max-width: 420px;
+}
+
+.footer-info .logo {
+  margin-bottom: 16px;
+}
+
+.footer-info p {
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 32px;
+}
+
+.link-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link-column h4 {
+  font-family: var(--font-headings);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.link-column a,
+.link-column span,
+.footer-btn-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: left;
+  transition: color var(--transition-fast);
+}
+
+.link-column a:hover,
+.footer-btn-link:hover {
+  color: var(--primary-accent);
+}
+
+.footer-btn-link {
+  cursor: pointer;
+}
+
+.footer-contact {
+  font-style: normal;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-color);
+  padding: 18px 40px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .footer-info {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-container {
+    padding: 40px 24px;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footer-bottom {
+    padding: 18px 24px;
+  }
+}
+
+/* ==========================================================================
    Shopping Cart Slide-out Drawer
    ========================================================================== */
 
