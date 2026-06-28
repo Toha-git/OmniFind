@@ -34,7 +34,6 @@ export function renderCartDrawer(state, callbacks) {
   
   const subtotalVal = document.getElementById("cart-subtotal");
   const shippingVal = document.getElementById("cart-shipping");
-  const taxVal = document.getElementById("cart-tax");
   const totalVal = document.getElementById("cart-total");
   const checkoutBtn = document.getElementById("checkout-start-btn");
 
@@ -43,15 +42,6 @@ export function renderCartDrawer(state, callbacks) {
   // Calculate totals
   const totalItemCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  
-  // Tax (8.5%)
-  const tax = subtotal * 0.085;
-  
-  // Shipping: Free over 1500 Tk, otherwise 100 Tk flat. 0 Tk if cart is empty.
-  const shippingThreshold = 1500;
-  const shippingCharge = subtotal > shippingThreshold || subtotal === 0 ? 0 : 100.00;
-  
-  const total = subtotal + tax + shippingCharge;
 
   // Update Header and Drawer Badge counts
   countHeaderBadge.textContent = totalItemCount;
@@ -60,14 +50,8 @@ export function renderCartDrawer(state, callbacks) {
 
   // Update Financial labels
   subtotalVal.textContent = `Tk ${subtotal.toFixed(2)}`;
-  shippingVal.textContent = subtotal === 0 
-    ? "Tk 0.00" 
-    : subtotal > shippingThreshold 
-      ? "FREE" 
-      : `Tk ${shippingCharge.toFixed(2)}`;
-  
-  taxVal.textContent = `Tk ${tax.toFixed(2)}`;
-  totalVal.textContent = `Tk ${total.toFixed(2)}`;
+  shippingVal.textContent = subtotal === 0 ? "Tk 0.00" : "Choose at checkout";
+  totalVal.textContent = `Tk ${subtotal.toFixed(2)}`;
 
   // Checkout button unlock
   if (state.cart.length > 0) {

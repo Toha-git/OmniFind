@@ -23,6 +23,7 @@ export function openCheckoutModal(state, callbacks) {
   const indSuccess = document.getElementById("step-ind-success");
 
   const authAmountLabel = document.getElementById("checkout-auth-amount");
+  const shippingAreaInputs = document.querySelectorAll('input[name="shipping-area"]');
 
   if (!shippingForm || !paymentForm || !successView) return;
 
@@ -31,11 +32,25 @@ export function openCheckoutModal(state, callbacks) {
 
   // Calculate order totals
   const subtotal = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  const tax = subtotal * 0.085;
-  const shippingCharge = subtotal > 1500 ? 0 : 100.00;
-  const total = subtotal + tax + shippingCharge;
+  let shippingChoice = getSelectedShippingChoice();
+  let total = subtotal + shippingChoice.cost;
 
-  authAmountLabel.textContent = `Tk ${total.toFixed(2)}`;
+  updateAuthAmount();
+
+  function getSelectedShippingChoice() {
+    const selected = document.querySelector('input[name="shipping-area"]:checked');
+    const cost = Number(selected?.dataset.cost || 80);
+    return {
+      area: selected?.value === "outside-dhaka" ? "Outside Dhaka" : "Inside Dhaka",
+      cost
+    };
+  }
+
+  function updateAuthAmount() {
+    shippingChoice = getSelectedShippingChoice();
+    total = subtotal + shippingChoice.cost;
+    authAmountLabel.textContent = `Tk ${total.toFixed(2)}`;
+  }
 
   // Form Step Navigation Helper
   function showStep(stepNumber) {
@@ -63,9 +78,14 @@ export function openCheckoutModal(state, callbacks) {
   // Step 1: Submit Shipping -> Go to Step 2
   const shippingSubmitHandler = (e) => {
     e.preventDefault();
+    updateAuthAmount();
     showStep(2);
   };
   shippingForm.addEventListener("submit", shippingSubmitHandler);
+
+  shippingAreaInputs.forEach(input => {
+    input.addEventListener("change", updateAuthAmount);
+  });
 
   // Step 2: Back button -> Return to Step 1
   const payBackBtn = document.getElementById("payment-back-btn");
@@ -128,9 +148,11 @@ export function openCheckoutModal(state, callbacks) {
 
       // Set Order Reference details in Step 3
       const orderRefId = "OMNI-" + Math.floor(100000 + Math.random() * 900000);
-      const emailEntered = document.getElementById("shipping-email").value;
+      const customerName = document.getElementById("shipping-name")?.value || "";
+      const phoneEntered = document.getElementById("shipping-phone")?.value || "";
+      const addressEntered = document.getElementById("shipping-address")?.value || "";
 
-      document.getElementById("success-email").textContent = emailEntered;
+      document.getElementById("success-contact").textContent = phoneEntered;
       document.getElementById("success-order-id").textContent = `#${orderRefId}`;
 
       // Show Success View
@@ -143,6 +165,11 @@ export function openCheckoutModal(state, callbacks) {
       callbacks.onCheckoutComplete({
         orderId: orderRefId,
         total: total,
+        shippingArea: shippingChoice.area,
+        shippingCharge: shippingChoice.cost,
+        customerName,
+        phone: phoneEntered,
+        address: addressEntered,
         itemsCount: state.cart.reduce((sum, item) => sum + item.quantity, 0),
         itemsSummary: state.cart.map(item => `${item.product.title} (x${item.quantity})`).join(", "),
         date: new Date().toLocaleDateString(undefined, {

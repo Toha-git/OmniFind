@@ -1634,13 +1634,15 @@ body.light-theme .add-cart-btn {
   }
 }
 
-.form-field label {
+.form-field label,
+.field-label {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
-.form-field input {
+.form-field input,
+.form-field textarea {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
@@ -1649,11 +1651,19 @@ body.light-theme .add-cart-btn {
   transition: all var(--transition-fast);
 }
 
-body.light-theme .form-field input {
+.form-field textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+body.light-theme .form-field input,
+body.light-theme .form-field textarea {
   background: rgba(0, 0, 0, 0.02);
 }
 
-.form-field input:focus {
+.form-field input:focus,
+.form-field textarea:focus {
   border-color: var(--primary-accent);
   background: var(--bg-surface-hover);
   box-shadow: 0 0 0 3px var(--primary-accent-glow);
@@ -1662,6 +1672,50 @@ body.light-theme .form-field input {
 /* User Validation Styles */
 .form-field input:user-valid {
   border-color: #10b981;
+}
+
+.shipping-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.shipping-option {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.shipping-option:hover,
+.shipping-option:has(input:checked) {
+  border-color: var(--primary-accent);
+  background: var(--primary-accent-glow);
+  box-shadow: 0 0 0 3px var(--primary-accent-glow);
+}
+
+.shipping-option input {
+  margin-top: 3px;
+  accent-color: var(--primary-accent);
+}
+
+.shipping-option span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shipping-option strong {
+  font-size: 0.9rem;
+}
+
+.shipping-option small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
 }
 
 /* Checkout actions panel */
@@ -2437,6 +2491,10 @@ body.light-theme .order-history-card {
   .form-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+
+  .shipping-options {
+    grid-template-columns: 1fr;
   }
 
   .form-field.full,

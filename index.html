@@ -170,11 +170,7 @@
         </div>
         <div class="price-row secondary">
           <span>Shipping</span>
-          <span id="cart-shipping">Calculated next</span>
-        </div>
-        <div class="price-row secondary">
-          <span>Estimated Tax</span>
-          <span id="cart-tax">Calculated next</span>
+          <span id="cart-shipping">Choose at checkout</span>
         </div>
         <hr class="drawer-divider">
         <div class="price-row total">
@@ -218,27 +214,34 @@
           <div class="form-grid">
             <div class="form-field full">
               <label for="shipping-name">Full Name</label>
-              <input type="text" id="shipping-name" placeholder="John Doe" required>
-            </div>
-            <div class="form-field">
-              <label for="shipping-email">Email Address</label>
-              <input type="email" id="shipping-email" placeholder="john@example.com" required>
-            </div>
-            <div class="form-field">
-              <label for="shipping-phone">Phone Number</label>
-              <input type="tel" id="shipping-phone" placeholder="+1 (555) 019-2834" required>
+              <input type="text" id="shipping-name" placeholder="Your full name" required>
             </div>
             <div class="form-field full">
-              <label for="shipping-address">Street Address</label>
-              <input type="text" id="shipping-address" placeholder="123 Creator Blvd, Suite 400" required>
+              <label for="shipping-phone">Phone Number</label>
+              <input type="tel" id="shipping-phone" placeholder="01XXXXXXXXX" required>
             </div>
-            <div class="form-field">
-              <label for="shipping-city">City</label>
-              <input type="text" id="shipping-city" placeholder="San Francisco" required>
+            <div class="form-field full">
+              <label for="shipping-address">Full Address</label>
+              <textarea id="shipping-address" placeholder="House, road, area, thana, district" rows="4" required></textarea>
             </div>
-            <div class="form-field">
-              <label for="shipping-postal">Postal / ZIP Code</label>
-              <input type="text" id="shipping-postal" placeholder="94103" required>
+            <div class="form-field full">
+              <span class="field-label">Shipping Area</span>
+              <div class="shipping-options">
+                <label class="shipping-option">
+                  <input type="radio" name="shipping-area" value="inside-dhaka" data-cost="80" checked>
+                  <span>
+                    <strong>Inside Dhaka</strong>
+                    <small>Tk 80 delivery charge</small>
+                  </span>
+                </label>
+                <label class="shipping-option">
+                  <input type="radio" name="shipping-area" value="outside-dhaka" data-cost="130">
+                  <span>
+                    <strong>Outside Dhaka</strong>
+                    <small>Tk 130 delivery charge</small>
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
           
@@ -291,7 +294,7 @@
             <div class="success-checkmark">✓</div>
           </div>
           <h2>Order Received!</h2>
-          <p class="success-message">Your curated items are preparing for delivery. A simulation email has been dispatched to <strong id="success-email">john@example.com</strong>.</p>
+          <p class="success-message">Your curated items are preparing for delivery. We will contact you at <strong id="success-contact">01XXXXXXXXX</strong>.</p>
           
           <div class="order-summary-box">
             <div class="summary-line">
