@@ -137,7 +137,6 @@ export function openCheckoutModal(state, callbacks) {
         service_id: emailJsConfig.serviceId,
         template_id: emailJsConfig.templateId,
         user_id: emailJsConfig.publicKey,
-        public_key: emailJsConfig.publicKey,
         template_params: {
           to_email: emailJsConfig.recipientEmail,
           order_id: orderDetails.orderId,
