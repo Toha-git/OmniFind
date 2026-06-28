@@ -32,9 +32,6 @@ export function renderCartDrawer(state, callbacks) {
   const priceHeaderBadge = document.getElementById("cart-header-total");
   const countDrawerBadge = document.getElementById("cart-drawer-count");
   
-  const subtotalVal = document.getElementById("cart-subtotal");
-  const shippingVal = document.getElementById("cart-shipping");
-  const totalVal = document.getElementById("cart-total");
   const checkoutBtn = document.getElementById("checkout-start-btn");
 
   if (!itemsContainer) return;
@@ -47,11 +44,6 @@ export function renderCartDrawer(state, callbacks) {
   countHeaderBadge.textContent = totalItemCount;
   priceHeaderBadge.textContent = `Tk ${subtotal.toFixed(2)}`;
   countDrawerBadge.textContent = totalItemCount;
-
-  // Update Financial labels
-  subtotalVal.textContent = `Tk ${subtotal.toFixed(2)}`;
-  shippingVal.textContent = subtotal === 0 ? "Tk 0.00" : "Choose at checkout";
-  totalVal.textContent = `Tk ${subtotal.toFixed(2)}`;
 
   // Checkout button unlock
   if (state.cart.length > 0) {

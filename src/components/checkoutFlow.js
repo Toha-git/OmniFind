@@ -23,9 +23,10 @@ export function openCheckoutModal(state, callbacks) {
   const indSuccess = document.getElementById("step-ind-success");
 
   const authAmountLabel = document.getElementById("checkout-auth-amount");
+  const shippingTotalLabel = document.getElementById("checkout-shipping-total");
   const shippingAreaInputs = document.querySelectorAll('input[name="shipping-area"]');
 
-  if (!shippingForm || !paymentForm || !successView) return;
+  if (!shippingForm || !paymentForm || !successView || !authAmountLabel || !shippingTotalLabel) return;
 
   // Initialize Wizard State (Step 1: Shipping)
   showStep(1);
@@ -50,6 +51,7 @@ export function openCheckoutModal(state, callbacks) {
     shippingChoice = getSelectedShippingChoice();
     total = subtotal + shippingChoice.cost;
     authAmountLabel.textContent = `Tk ${total.toFixed(2)}`;
+    shippingTotalLabel.textContent = `Tk ${total.toFixed(2)}`;
   }
 
   // Form Step Navigation Helper

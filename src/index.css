@@ -1718,6 +1718,29 @@ body.light-theme .form-field textarea {
   font-size: 0.78rem;
 }
 
+.shipping-total-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 16px 18px;
+  margin: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--bg-surface-hover);
+}
+
+.shipping-total-card span {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.shipping-total-card strong {
+  font-family: var(--font-headings);
+  font-size: 1.25rem;
+  color: var(--text-main);
+}
+
 /* Checkout actions panel */
 .checkout-actions {
   display: flex;

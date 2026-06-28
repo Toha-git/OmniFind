@@ -164,20 +164,6 @@
       </div>
       
       <div class="drawer-footer">
-        <div class="price-row">
-          <span>Subtotal</span>
-          <span id="cart-subtotal">Tk 0.00</span>
-        </div>
-        <div class="price-row secondary">
-          <span>Shipping</span>
-          <span id="cart-shipping">Choose at checkout</span>
-        </div>
-        <hr class="drawer-divider">
-        <div class="price-row total">
-          <span>Total</span>
-          <span id="cart-total">Tk 0.00</span>
-        </div>
-        
         <button id="checkout-start-btn" class="checkout-btn" disabled>
           <span>Proceed to Checkout</span>
           <span class="arrow">→</span>
@@ -243,6 +229,11 @@
                 </label>
               </div>
             </div>
+          </div>
+
+          <div class="shipping-total-card">
+            <span>Total Amount</span>
+            <strong id="checkout-shipping-total">Tk 0.00</strong>
           </div>
           
           <div class="checkout-actions">
