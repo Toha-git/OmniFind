@@ -57,7 +57,7 @@ export function openCheckoutModal(state, callbacks) {
   function updateAuthAmount() {
     shippingChoice = getSelectedShippingChoice();
     total = subtotal + shippingChoice.cost;
-    authAmountLabel.textContent = `Tk ${total.toFixed(2)}`;
+    authAmountLabel.textContent = `Tk ${shippingChoice.cost.toFixed(2)}`;
     shippingTotalLabel.textContent = `Tk ${total.toFixed(2)}`;
   }
 
@@ -119,10 +119,13 @@ export function openCheckoutModal(state, callbacks) {
         service_id: emailJsConfig.serviceId,
         template_id: emailJsConfig.templateId,
         user_id: emailJsConfig.publicKey,
+        public_key: emailJsConfig.publicKey,
         template_params: {
           to_email: emailJsConfig.recipientEmail,
           order_id: orderDetails.orderId,
           total_amount: `Tk ${orderDetails.total.toFixed(2)}`,
+          amount_to_pay: `Tk ${orderDetails.shippingCharge.toFixed(2)}`,
+          delivery_charge: `Tk ${orderDetails.shippingCharge.toFixed(2)}`,
           shipping_area: orderDetails.shippingArea,
           shipping_charge: `Tk ${orderDetails.shippingCharge.toFixed(2)}`,
           customer_name: orderDetails.customerName,
@@ -135,7 +138,8 @@ export function openCheckoutModal(state, callbacks) {
     });
 
     if (!response.ok) {
-      throw new Error("EmailJS request failed");
+      const message = await response.text();
+      throw new Error(message || "EmailJS request failed");
     }
   }
 
