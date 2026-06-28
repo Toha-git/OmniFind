@@ -2161,6 +2161,390 @@ body.light-theme .order-history-card {
 }
 
 /* ==========================================================================
+   Responsive Layout Pass
+   ========================================================================== */
+
+@media (hover: none) {
+  .product-overlay-actions {
+    bottom: 0;
+  }
+
+  .product-card:hover,
+  .header-btn:hover,
+  .detail-add-btn:hover,
+  .checkout-btn:hover:not(:disabled),
+  .primary-btn:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  :root {
+    --header-height: 132px;
+  }
+
+  .main-header {
+    height: auto;
+    min-height: var(--header-height);
+  }
+
+  .header-container {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    align-content: center;
+    padding: 12px 24px;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link-btn {
+    white-space: nowrap;
+  }
+
+  .marketplace-container {
+    padding: 0 24px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-height: 142px;
+  }
+
+  .header-container {
+    padding: 10px 16px;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    font-size: 1.45rem;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cart-btn {
+    padding: 0 12px;
+  }
+
+  .cart-total-badge,
+  .btn-tooltip {
+    display: none;
+  }
+
+  .nav-link-btn {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+
+  .hero-section {
+    padding-top: calc(var(--header-height) + 32px);
+    padding-bottom: 48px;
+  }
+
+  .hero-bg-glow {
+    width: 360px;
+    height: 360px;
+    top: -120px;
+  }
+
+  .hero-container {
+    padding: 0 16px;
+  }
+
+  .hero-tag {
+    margin-bottom: 16px;
+    font-size: 0.72rem;
+  }
+
+  .hero-title {
+    font-size: 2.15rem;
+    line-height: 1.12;
+    letter-spacing: 0;
+  }
+
+  .hero-subtitle {
+    font-size: 0.98rem;
+    margin-bottom: 28px;
+  }
+
+  .hero-search-wrapper {
+    padding: 12px 14px;
+    border-radius: var(--border-radius-md);
+  }
+
+  .hero-search-wrapper input {
+    min-width: 0;
+    font-size: 0.92rem;
+  }
+
+  .marketplace-container {
+    margin-bottom: 56px;
+    padding: 0 16px;
+  }
+
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 28px;
+  }
+
+  .filter-group {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-select,
+  .slider-wrapper {
+    width: 100%;
+  }
+
+  .filter-status {
+    align-items: flex-start;
+    border-radius: var(--border-radius-sm);
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .card-visuals {
+    height: min(64vw, 260px);
+  }
+
+  .card-details {
+    padding: 18px;
+  }
+
+  .product-card-footer {
+    gap: 14px;
+  }
+
+  .add-cart-btn {
+    min-height: 42px;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  .footer-container {
+    padding: 36px 16px;
+  }
+
+  .custom-dialog {
+    width: calc(100% - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+
+  .dialog-wrapper {
+    max-height: calc(100dvh - 20px);
+    overflow-y: auto;
+    padding: 24px 18px;
+    border-radius: var(--border-radius-md);
+  }
+
+  .dialog-close-btn {
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .detail-main-img-wrapper {
+    height: min(70vw, 280px);
+  }
+
+  .detail-title {
+    font-size: 1.55rem;
+    padding-right: 28px;
+  }
+
+  .detail-rating-row,
+  .spec-line,
+  .summary-line,
+  .payment-overview-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .detail-purchase-bar,
+  .checkout-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detail-qty {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .detail-add-btn,
+  .primary-btn,
+  .back-btn {
+    min-height: 44px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .checkout-wrapper {
+    padding-top: 48px;
+  }
+
+  .checkout-steps {
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+  }
+
+  .step-indicator {
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+  }
+
+  .step-indicator.active::after {
+    bottom: -14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .form-field.full,
+  .form-field {
+    grid-column: auto;
+  }
+
+  .dashboard-wrapper-box {
+    width: calc(100vw - 20px);
+  }
+
+  .dashboard-sidebar,
+  .dashboard-main-content {
+    padding: 22px 16px;
+  }
+
+  .dashboard-menu {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .menu-btn {
+    flex: 0 0 auto;
+    text-align: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --header-height: 150px;
+  }
+
+  .header-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hero-title {
+    font-size: 1.9rem;
+  }
+
+  .product-info-meta,
+  .cart-item-footer,
+  .order-history-header,
+  .order-history-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cart-drawer.active .drawer-backdrop {
+    opacity: 0.78;
+  }
+
+  .drawer-content {
+    right: -100vw;
+    max-width: none;
+    width: 100vw;
+    border-left: none;
+  }
+
+  .drawer-header,
+  .drawer-body,
+  .drawer-footer {
+    padding: 18px 16px;
+  }
+
+  .cart-item {
+    gap: 12px;
+  }
+
+  .cart-item-img-wrapper {
+    width: 70px;
+    height: 70px;
+    flex: 0 0 70px;
+  }
+
+  .product-card-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .product-price-stack {
+    min-width: 0;
+  }
+
+  .add-cart-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .footer-links {
+    gap: 24px;
+  }
+
+  .footer-bottom p {
+    line-height: 1.5;
+  }
+}
+
+
+
+/* ==========================================================================
    Confetti Overlay Canvas
    ========================================================================== */
 
