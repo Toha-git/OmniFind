@@ -25,8 +25,9 @@ export function openCheckoutModal(state, callbacks) {
   const authAmountLabel = document.getElementById("checkout-auth-amount");
   const shippingTotalLabel = document.getElementById("checkout-shipping-total");
   const shippingAreaInputs = document.querySelectorAll('input[name="shipping-area"]');
+  const bkashLastDigitsInput = document.getElementById("bkash-last-digits");
 
-  if (!shippingForm || !paymentForm || !successView || !authAmountLabel || !shippingTotalLabel) return;
+  if (!shippingForm || !paymentForm || !successView || !authAmountLabel || !shippingTotalLabel || !bkashLastDigitsInput) return;
 
   // Initialize Wizard State (Step 1: Shipping)
   showStep(1);
@@ -96,56 +97,30 @@ export function openCheckoutModal(state, callbacks) {
   };
   payBackBtn.addEventListener("click", payBackHandler);
 
-  // Card formatting helpers
-  const cardNumberInput = document.getElementById("payment-card-number");
-  const cardTypeIcon = document.getElementById("card-type-icon");
-  const cardExpiryInput = document.getElementById("payment-card-expiry");
-
-  // Format credit card: Spaces every 4 digits, detect issuer
-  const cardNumHandler = () => {
-    let value = cardNumberInput.value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    
-    // Detect Issuer type
-    if (value.startsWith("4")) {
-      cardTypeIcon.textContent = " Visa 🔵";
-    } else if (value.startsWith("5")) {
-      cardTypeIcon.textContent = " Mastercard 🔴";
-    } else if (value.startsWith("3")) {
-      cardTypeIcon.textContent = " Amex 🟢";
-    } else {
-      cardTypeIcon.textContent = "💳";
-    }
-
-    let formatted = "";
-    for (let i = 0; i < value.length; i++) {
-      if (i > 0 && i % 4 === 0) formatted += " ";
-      formatted += value[i];
-    }
-    cardNumberInput.value = formatted;
+  const bkashDigitsHandler = () => {
+    bkashLastDigitsInput.value = bkashLastDigitsInput.value.replace(/[^0-9]/g, "").slice(0, 3);
+    bkashLastDigitsInput.setCustomValidity("");
   };
-  cardNumberInput.addEventListener("input", cardNumHandler);
-
-  // Format expiry dates: MM/YY
-  const cardExpiryHandler = () => {
-    let value = cardExpiryInput.value.replace(/[^0-9]/g, "");
-    if (value.length >= 2) {
-      cardExpiryInput.value = value.slice(0, 2) + "/" + value.slice(2, 4);
-    } else {
-      cardExpiryInput.value = value;
-    }
-  };
-  cardExpiryInput.addEventListener("input", cardExpiryHandler);
+  bkashLastDigitsInput.addEventListener("input", bkashDigitsHandler);
 
   // Step 2: Submit Payment -> Process Simulation -> Go to Step 3
   const paymentSubmitHandler = (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById("payment-submit-btn");
-    submitBtn.textContent = "Authorizing Encrypted Pipeline...";
+    const bkashLastDigits = bkashLastDigitsInput.value.trim();
+    if (!/^\d{3}$/.test(bkashLastDigits)) {
+      bkashLastDigitsInput.setCustomValidity("Enter exactly 3 digits");
+      bkashLastDigitsInput.reportValidity();
+      return;
+    }
+
+    bkashLastDigitsInput.setCustomValidity("");
+    submitBtn.textContent = "Submitting bKash Details...";
     submitBtn.setAttribute("disabled", "true");
 
     setTimeout(() => {
       // Restore button text
-      submitBtn.textContent = "Authorize Secure Payment";
+      submitBtn.textContent = "Submit bKash Payment";
       submitBtn.removeAttribute("disabled");
 
       // Set Order Reference details in Step 3
@@ -153,6 +128,19 @@ export function openCheckoutModal(state, callbacks) {
       const customerName = document.getElementById("shipping-name")?.value || "";
       const phoneEntered = document.getElementById("shipping-phone")?.value || "";
       const addressEntered = document.getElementById("shipping-address")?.value || "";
+      const emailSubject = `OmniFind bKash payment ${orderRefId}`;
+      const emailBody = [
+        `Order Reference: ${orderRefId}`,
+        `Total: Tk ${total.toFixed(2)}`,
+        `Shipping Area: ${shippingChoice.area}`,
+        `Shipping Charge: Tk ${shippingChoice.cost.toFixed(2)}`,
+        `Customer Name: ${customerName}`,
+        `Mobile Number: ${phoneEntered}`,
+        `Full Address: ${addressEntered}`,
+        `bKash Number Last 3 Digits: ${bkashLastDigits}`,
+        `Items: ${state.cart.map(item => `${item.product.title} (x${item.quantity})`).join(", ")}`
+      ].join("\n");
+      window.location.href = `mailto:ragibulfat@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
       document.getElementById("success-contact").textContent = phoneEntered;
       document.getElementById("success-order-id").textContent = `#${orderRefId}`;
@@ -172,6 +160,7 @@ export function openCheckoutModal(state, callbacks) {
         customerName,
         phone: phoneEntered,
         address: addressEntered,
+        bkashLastDigits,
         itemsCount: state.cart.reduce((sum, item) => sum + item.quantity, 0),
         itemsSummary: state.cart.map(item => `${item.product.title} (x${item.quantity})`).join(", "),
         date: new Date().toLocaleDateString(undefined, {

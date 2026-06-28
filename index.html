@@ -250,31 +250,23 @@
             <strong id="checkout-auth-amount">Tk 0.00</strong>
           </div>
           
-          <div class="form-grid">
+          <div class="bkash-payment-details">
+            <h4>bKash Payment Details</h4>
+            <ol>
+              <li>Open your bKash app and tap <strong>Send Money</strong>.</li>
+              <li>Choose <strong>Personal bKash Number</strong>.</li>
+              <li>Send the total amount to <strong>0176741848662</strong>.</li>
+              <li>Enter the last 3 digits of your bKash number below and submit.</li>
+            </ol>
             <div class="form-field full">
-              <label for="payment-card-name">Name on Card</label>
-              <input type="text" id="payment-card-name" placeholder="John Doe" required>
-            </div>
-            <div class="form-field full">
-              <label for="payment-card-number">Card Number</label>
-              <div class="card-number-wrapper">
-                <input type="text" id="payment-card-number" placeholder="•••• •••• •••• ••••" maxlength="19" required>
-                <span id="card-type-icon" class="card-type-icon">💳</span>
-              </div>
-            </div>
-            <div class="form-field">
-              <label for="payment-card-expiry">Expiry Date</label>
-              <input type="text" id="payment-card-expiry" placeholder="MM/YY" maxlength="5" required>
-            </div>
-            <div class="form-field">
-              <label for="payment-card-cvv">CVV Code</label>
-              <input type="password" id="payment-card-cvv" placeholder="•••" maxlength="4" required>
+              <label for="bkash-last-digits">Last 3 digits of your bKash number</label>
+              <input type="text" id="bkash-last-digits" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" placeholder="123" required>
             </div>
           </div>
           
           <div class="checkout-actions">
             <button type="button" class="back-btn" id="payment-back-btn">&larr; Shipping Info</button>
-            <button type="submit" class="primary-btn pulse-glow" id="payment-submit-btn">Authorize Secure Payment</button>
+            <button type="submit" class="primary-btn pulse-glow" id="payment-submit-btn">Submit bKash Payment</button>
           </div>
         </form>
 

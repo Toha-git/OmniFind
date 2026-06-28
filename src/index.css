@@ -1796,6 +1796,40 @@ body.light-theme .form-field textarea {
   color: var(--primary-accent);
 }
 
+.bkash-payment-details {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 22px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+body.light-theme .bkash-payment-details {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.bkash-payment-details h4 {
+  font-family: var(--font-headings);
+  font-size: 1.15rem;
+  margin-bottom: 16px;
+}
+
+.bkash-payment-details ol {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px 20px;
+  color: var(--text-muted);
+}
+
+.bkash-payment-details li {
+  padding-left: 6px;
+  line-height: 1.55;
+}
+
+.bkash-payment-details strong {
+  color: var(--text-main);
+}
+
 .card-number-wrapper {
   position: relative;
   display: flex;
