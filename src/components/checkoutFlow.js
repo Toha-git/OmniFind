@@ -26,6 +26,12 @@ export function openCheckoutModal(state, callbacks) {
   const shippingTotalLabel = document.getElementById("checkout-shipping-total");
   const shippingAreaInputs = document.querySelectorAll('input[name="shipping-area"]');
   const bkashLastDigitsInput = document.getElementById("bkash-last-digits");
+  const emailJsConfig = {
+    serviceId: "service_l7w2bzm",
+    templateId: "template_rmcx5zs",
+    publicKey: "yO9TDsb-J_LvpTLdU",
+    recipientEmail: "ragibulfat@gmail.com"
+  };
 
   if (!shippingForm || !paymentForm || !successView || !authAmountLabel || !shippingTotalLabel || !bkashLastDigitsInput) return;
 
@@ -103,8 +109,38 @@ export function openCheckoutModal(state, callbacks) {
   };
   bkashLastDigitsInput.addEventListener("input", bkashDigitsHandler);
 
-  // Step 2: Submit Payment -> Process Simulation -> Go to Step 3
-  const paymentSubmitHandler = (e) => {
+  async function sendPaymentEmail(orderDetails) {
+    const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        service_id: emailJsConfig.serviceId,
+        template_id: emailJsConfig.templateId,
+        user_id: emailJsConfig.publicKey,
+        template_params: {
+          to_email: emailJsConfig.recipientEmail,
+          order_id: orderDetails.orderId,
+          total_amount: `Tk ${orderDetails.total.toFixed(2)}`,
+          shipping_area: orderDetails.shippingArea,
+          shipping_charge: `Tk ${orderDetails.shippingCharge.toFixed(2)}`,
+          customer_name: orderDetails.customerName,
+          customer_phone: orderDetails.phone,
+          customer_address: orderDetails.address,
+          bkash_last_digits: orderDetails.bkashLastDigits,
+          items_summary: orderDetails.itemsSummary
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("EmailJS request failed");
+    }
+  }
+
+  // Step 2: Submit Payment -> Send bKash details -> Go to Step 3
+  const paymentSubmitHandler = async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById("payment-submit-btn");
     const bkashLastDigits = bkashLastDigitsInput.value.trim();
@@ -118,43 +154,15 @@ export function openCheckoutModal(state, callbacks) {
     submitBtn.textContent = "Submitting bKash Details...";
     submitBtn.setAttribute("disabled", "true");
 
-    setTimeout(() => {
-      // Restore button text
-      submitBtn.textContent = "Submit bKash Payment";
-      submitBtn.removeAttribute("disabled");
-
+    try {
       // Set Order Reference details in Step 3
       const orderRefId = "OMNI-" + Math.floor(100000 + Math.random() * 900000);
       const customerName = document.getElementById("shipping-name")?.value || "";
       const phoneEntered = document.getElementById("shipping-phone")?.value || "";
       const addressEntered = document.getElementById("shipping-address")?.value || "";
-      const emailSubject = `OmniFind bKash payment ${orderRefId}`;
-      const emailBody = [
-        `Order Reference: ${orderRefId}`,
-        `Total: Tk ${total.toFixed(2)}`,
-        `Shipping Area: ${shippingChoice.area}`,
-        `Shipping Charge: Tk ${shippingChoice.cost.toFixed(2)}`,
-        `Customer Name: ${customerName}`,
-        `Mobile Number: ${phoneEntered}`,
-        `Full Address: ${addressEntered}`,
-        `bKash Number Last 3 Digits: ${bkashLastDigits}`,
-        `Items: ${state.cart.map(item => `${item.product.title} (x${item.quantity})`).join(", ")}`
-      ].join("\n");
-      window.location.href = `mailto:ragibulfat@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-      document.getElementById("success-contact").textContent = phoneEntered;
-      document.getElementById("success-order-id").textContent = `#${orderRefId}`;
-
-      // Show Success View
-      showStep(3);
-
-      // Trigger Confetti Celebration!
-      startConfettiExplosion();
-
-      // Trigger Checkout complete callback (cleans cart, updates user purchase history)
-      callbacks.onCheckoutComplete({
+      const orderDetails = {
         orderId: orderRefId,
-        total: total,
+        total,
         shippingArea: shippingChoice.area,
         shippingCharge: shippingChoice.cost,
         customerName,
@@ -169,8 +177,30 @@ export function openCheckoutModal(state, callbacks) {
           hour: '2-digit',
           minute: '2-digit'
         })
-      });
-    }, 1500); // 1.5s simulated network delay
+      };
+
+      await sendPaymentEmail(orderDetails);
+
+      submitBtn.textContent = "Submit bKash Payment";
+      submitBtn.removeAttribute("disabled");
+
+      document.getElementById("success-contact").textContent = phoneEntered;
+      document.getElementById("success-order-id").textContent = `#${orderRefId}`;
+
+      // Show Success View
+      showStep(3);
+
+      // Trigger Confetti Celebration!
+      startConfettiExplosion();
+
+      // Trigger Checkout complete callback (cleans cart, updates user purchase history)
+      callbacks.onCheckoutComplete(orderDetails);
+    } catch (error) {
+      console.error("Unable to send bKash payment details", error);
+      submitBtn.textContent = "Submit bKash Payment";
+      submitBtn.removeAttribute("disabled");
+      alert("Could not send your bKash details. Please try again.");
+    }
   };
   paymentForm.addEventListener("submit", paymentSubmitHandler);
 
